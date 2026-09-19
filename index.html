@@ -89,22 +89,70 @@
   .projects h2, .contact h2 { margin: 0 0 40px 0; font-size: 28px; }
   .projects-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
   .project-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
-    padding: 28px; display: flex; flex-direction: column; gap: 14px;
-    transition: border-color 0.15s ease, transform 0.15s ease;
+    position: relative; overflow: hidden;
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 32px 28px 28px; display: flex; flex-direction: column; gap: 14px;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   }
-  .project-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .project-card h3 { margin: 0; font-size: 19px; }
+  .project-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: var(--accent);
+  }
+  .project-card:hover {
+    border-color: var(--accent); transform: translateY(-4px);
+    box-shadow: 0 16px 32px -18px rgba(27,27,31,0.28);
+  }
+  .project-index { font-size: 12px; color: var(--ink-faint); letter-spacing: 0.04em; }
+  .project-card h3 { margin: 0; font-size: 20px; letter-spacing: -0.01em; }
   .project-card p { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); flex-grow: 1; }
   .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
   .tag {
-    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-faint);
-    background: var(--bg); padding: 4px 9px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, var(--bg));
+    padding: 4px 9px; border-radius: 4px;
   }
   .card-links { display: flex; gap: 16px; margin-top: 4px; padding-top: 14px; border-top: 1px solid var(--border-soft); }
-  .card-links a { font-size: 14px; font-weight: 500; }
+  .card-links a { font-size: 14px; font-weight: 500; transition: opacity 0.15s ease; }
   .card-links a.primary { color: var(--accent); }
   .card-links a.secondary { color: var(--ink-faint); }
+  .card-links a:hover { opacity: 0.7; }
+
+  .project-card--wide { grid-column: 1 / -1; }
+  .project-thumb {
+    all: unset; box-sizing: border-box; display: block; width: 100%; text-align: left;
+    position: relative; border-radius: 8px; overflow: hidden; cursor: zoom-in;
+    border: 1px solid var(--border); margin-top: 4px;
+  }
+  .project-thumb img {
+    width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover;
+    transition: transform 0.25s ease;
+  }
+  .project-thumb:hover img { transform: scale(1.03); }
+  .thumb-hint {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 14px;
+    font-size: 12px; color: #fff; opacity: 0; transition: opacity 0.2s ease;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0));
+  }
+  .project-thumb:hover .thumb-hint { opacity: 1; }
+
+  .lightbox-overlay {
+    position: fixed; inset: 0; background: rgba(15,15,17,0.9);
+    display: none; align-items: center; justify-content: center;
+    z-index: 100; padding: 24px;
+  }
+  .lightbox-overlay.active { display: flex; }
+  .lightbox-overlay img {
+    max-width: 90vw; max-height: 90vh; border-radius: 10px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  }
+  .lightbox-close {
+    position: fixed; top: 24px; right: 28px; background: none; border: none;
+    color: #fff; font-size: 22px; cursor: pointer; line-height: 1;
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s ease;
+  }
+  .lightbox-close:hover { background: rgba(255,255,255,0.12); }
 
   .contact .wrap { padding: 60px 40px 100px; }
   .contact h2 { max-width: 520px; margin-bottom: 16px; font-size: 32px; }
@@ -145,10 +193,10 @@
 <section id="top" class="hero">
   <div class="wrap">
     <div class="hero-copy">
-      <div class="eyebrow mono">Hi, I'm Joshua Kratt —</div>
+      <div class="eyebrow mono">Hello, I'm Joshua Kratt —</div>
       <h1 class="display">Enterprise Technology Integration student building things for the web.</h1>
       <div class="role-line">3rd-year Enterprise Technology Integration student at The Pennsylvania State University</div>
-      <p class="lede">Hey, I'm a student at Penn State, but am originally from Louisville, Kentucky. I love all things with sports analytics and data, tracking dashboards, and more.</p>
+      <p class="lede">Hello, I'm a student at Penn State, but am originally from Louisville, Kentucky. I love all things with sports analytics and data, tracking dashboards, and more.</p>
       <div class="cta-row">
         <a href="#projects" class="btn btn-primary">View my work</a>
         <a href="#contact" class="btn btn-ghost">Contact me</a>
@@ -167,18 +215,16 @@
       <h2 class="display">A bit about me</h2>
     </div>
     <div class="about-body">
-      <p>[Write a few sentences here: your background, what got you into building software, and what kind of work you're looking for. Keep it conversational — this is the part people actually read.]</p>
+      <p>As an Enterprise Technology Integration student, I've been interested on the use of databases and integrating that information with different software systems. I've been able to incorporate the use of AI in certain personal projects of mine such as the interface build on this portfolio site. Being able to take numbers and turn it into an easily readable database for personal and work use, is a passion of mine.</p>
       <div>
         <div class="skills-label">Tools &amp; technologies</div>
         <div class="skills">
-          <span class="pill">TypeScript</span>
-          <span class="pill">React</span>
-          <span class="pill">Node.js</span>
           <span class="pill">Python</span>
-          <span class="pill">PostgreSQL</span>
-          <span class="pill">Docker</span>
-          <span class="pill">AWS</span>
-          <span class="pill">GraphQL</span>
+          <span class="pill">HTML</span>
+          <span class="pill">CSS</span>
+          <span class="pill">SQL</span>
+          <span class="pill">Excel</span>
+          <span class="pill">Enterprise AI</span>
         </div>
       </div>
     </div>
@@ -192,51 +238,42 @@
     <div class="projects-grid">
 
       <div class="project-card">
-        <h3 class="display">Task Manager API</h3>
-        <p>A REST API for team task tracking with role-based permissions and real-time updates.</p>
+        <div class="project-index mono">Project 01</div>
+        <h3 class="display">Draft Day vs. Reality — Mock Draft Scorecard</h3>
+        <p>My first round NFL mock drafts from 2022-2026, compared to what actually happened on draft night.</p>
         <div class="tag-row">
-          <span class="tag">Node.js</span><span class="tag">PostgreSQL</span><span class="tag">Redis</span>
+          <span class="tag">Data Analysis</span><span class="tag">Sports Analytics</span><span class="tag">Interactive Charts</span>
         </div>
         <div class="card-links">
-          <a href="#" class="primary">Live demo →</a>
-          <a href="#" class="secondary">Source →</a>
+          <a href="https://jsk5892.github.io/mock-draft-scorecard/" target="_blank" rel="noopener noreferrer" class="primary">Live demo →</a>
+          <a href="https://github.com/jsk5892/mock-draft-scorecard" target="_blank" rel="noopener noreferrer" class="secondary">Source →</a>
         </div>
       </div>
 
       <div class="project-card">
-        <h3 class="display">Realtime Chat App</h3>
-        <p>A websocket-based chat client supporting rooms, presence indicators, and message history.</p>
+        <div class="project-index mono">Project 02</div>
+        <h3 class="display">Brady, Overrated? A Data Case</h3>
+        <p>An interactive dashboard showcasing Tom Brady's career, comparing him against his close peers and displaying an incredible run of fortunate playoff moments.</p>
         <div class="tag-row">
-          <span class="tag">React</span><span class="tag">WebSockets</span><span class="tag">Express</span>
+          <span class="tag">Data Visualization</span><span class="tag">Sports Analytics</span><span class="tag">Research</span>
         </div>
         <div class="card-links">
-          <a href="#" class="primary">Live demo →</a>
-          <a href="#" class="secondary">Source →</a>
+          <a href="https://jsk5892.github.io/brady-dashboard/" target="_blank" rel="noopener noreferrer" class="primary">Live demo →</a>
+          <a href="https://github.com/jsk5892/brady-dashboard" target="_blank" rel="noopener noreferrer" class="secondary">Source →</a>
         </div>
       </div>
 
-      <div class="project-card">
-        <h3 class="display">Data Viz Dashboard</h3>
-        <p>An internal analytics dashboard turning raw event data into interactive charts.</p>
+      <div class="project-card project-card--wide">
+        <div class="project-index mono">Project 03</div>
+        <h3 class="display">Multi-City Sales Rep Tracker</h3>
+        <p>Over the past summer I was given raw sales rep data across separate documents for different cities, each in distinct formatting. I combined these rows into one master spreadsheet with proper filters and additions for event-planning use. Names and figures below are fabricated.</p>
         <div class="tag-row">
-          <span class="tag">TypeScript</span><span class="tag">D3.js</span><span class="tag">GraphQL</span>
+          <span class="tag">Excel</span><span class="tag">Data Tracking</span><span class="tag">SQL</span>
         </div>
-        <div class="card-links">
-          <a href="#" class="primary">Live demo →</a>
-          <a href="#" class="secondary">Source →</a>
-        </div>
-      </div>
-
-      <div class="project-card">
-        <h3 class="display">CLI Deployment Tool</h3>
-        <p>A command-line tool that automates build, test, and deploy steps for small teams.</p>
-        <div class="tag-row">
-          <span class="tag">Python</span><span class="tag">Docker</span><span class="tag">AWS</span>
-        </div>
-        <div class="card-links">
-          <a href="#" class="primary">Live demo →</a>
-          <a href="#" class="secondary">Source →</a>
-        </div>
+        <button class="project-thumb" type="button" onclick="openLightbox('internship-tracker.png','Sample rows from an internship data tracker — all names and figures are fabricated.')" aria-label="Click to view full-size screenshot of the data tracker">
+          <img src="internship-tracker.png" alt="Screenshot of a spreadsheet-style data tracker with fabricated sample data">
+          <span class="thumb-hint mono">Click to enlarge</span>
+        </button>
       </div>
 
     </div>
@@ -246,8 +283,8 @@
 <section id="contact" class="contact">
   <div class="wrap">
     <div class="section-eyebrow mono">03 — Contact</div>
-    <h2 class="display">Want to work together, or just say hi?</h2>
-    <p>Reach out by email or phone — happy to chat.</p>
+    <h2 class="display">Want to work together, or just say hello?</h2>
+    <p>Reach out by email — happy to chat.</p>
     <div class="cta-row">
       <a href="mailto:jskratt@icloud.com" class="btn btn-primary">jskratt@icloud.com</a>
       <a href="mailto:jsk5892@psu.edu" class="btn btn-ghost">jsk5892@psu.edu</a>
@@ -259,12 +296,36 @@
   <div class="wrap">
     <span class="copyright">© 2026 Joshua Kratt. Built with care.</span>
     <div class="social-links">
-      <a href="#">GitHub</a>
+      <a href="https://github.com/jsk5892" target="_blank" rel="noopener noreferrer">GitHub</a>
       <a href="https://www.linkedin.com/in/joshua-kratt-15b62832a/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       <a href="#">X / Twitter</a>
     </div>
   </div>
 </footer>
+
+<div id="lightbox-overlay" class="lightbox-overlay" onclick="closeLightbox()">
+  <button class="lightbox-close" type="button" onclick="closeLightbox()" aria-label="Close enlarged image">✕</button>
+  <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+</div>
+
+<script>
+  function openLightbox(src, alt) {
+    var overlay = document.getElementById('lightbox-overlay');
+    var img = document.getElementById('lightbox-img');
+    img.src = src;
+    img.alt = alt || '';
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    var overlay = document.getElementById('lightbox-overlay');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>
 
 </body>
 </html>
